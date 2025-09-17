@@ -12,18 +12,23 @@ public class GameManager : MonoBehaviour
     public Player player;
     public bool gameOver = false;
     private PlayerInputActions _playerInputActions;
-    private GameObject cinemachine;
-    
+    private CinemachineVirtualCamera virtualCamera;
+    private float minZoom, maxZoom, zoomSpeed;
+
 
     public int meteorCount = 0;
+    public int bigMeteorCount = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         Instantiate(playerPrefab, transform.position, Quaternion.identity);
         player = GameObject.FindAnyObjectByType<Player>();
-        cinemachine = GameObject.Find("Virtual Camera");
-        cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = player.transform;
+        virtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+        virtualCamera.Follow = player.transform;
+        minZoom = 60f;
+        maxZoom = 80f;
+        zoomSpeed = 5f;
         InvokeRepeating(nameof(SpawnMeteor), 1f, 2f);
     }
 
@@ -56,6 +61,16 @@ public class GameManager : MonoBehaviour
         {
             BigMeteor();
         }
+        if (bigMeteorCount > 0)
+        {
+            float fov = virtualCamera.m_Lens.FieldOfView;
+            virtualCamera.m_Lens.FieldOfView = Mathf.Lerp(fov, maxZoom, zoomSpeed * Time.deltaTime);
+        }
+        else
+        {
+            float fov = virtualCamera.m_Lens.FieldOfView;
+            virtualCamera.m_Lens.FieldOfView = Mathf.Lerp(fov, minZoom, zoomSpeed * Time.deltaTime);
+        }
     }
 
     void SpawnMeteor()
@@ -66,6 +81,8 @@ public class GameManager : MonoBehaviour
     void BigMeteor()
     {
         meteorCount = 0;
+        bigMeteorCount++;
         Instantiate(bigMeteorPrefab, new Vector3(player.transform.position.x + Random.Range(-10, 10), player.transform.position.y + 8f, 0), Quaternion.identity);
+        
     }
 }

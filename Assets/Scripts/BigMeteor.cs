@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class BigMeteor : MonoBehaviour
 {
+    public GameManager gameManager;
     private int hitCount = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -17,14 +18,16 @@ public class BigMeteor : MonoBehaviour
     {
         transform.Translate(Vector3.down * Time.deltaTime * 0.5f);
 
-        if (transform.position.y < -11f)
+        if (transform.position.y < -11f + gameManager.player.transform.position.y)
         {
             Destroy(this.gameObject);
+            gameManager.bigMeteorCount--;
         }
 
         if (hitCount >= 5)
         {
             Destroy(this.gameObject);
+            gameManager.bigMeteorCount--;
         }
     }
 
