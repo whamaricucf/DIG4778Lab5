@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class GameManager : MonoBehaviour
     public Player player;
     public bool gameOver = false;
     private PlayerInputActions _playerInputActions;
+    private GameObject cinemachine;
+    
 
     public int meteorCount = 0;
 
@@ -19,6 +22,8 @@ public class GameManager : MonoBehaviour
     {
         Instantiate(playerPrefab, transform.position, Quaternion.identity);
         player = GameObject.FindAnyObjectByType<Player>();
+        cinemachine = GameObject.Find("Virtual Camera");
+        cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = player.transform;
         InvokeRepeating(nameof(SpawnMeteor), 1f, 2f);
     }
 
