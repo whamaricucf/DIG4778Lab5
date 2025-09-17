@@ -30,12 +30,12 @@ public class BigMeteor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D whatIHit)
     {
-        if (whatIHit.tag == "Player")
+        if (whatIHit.CompareTag("Player"))
         {
             GameObject.Find("GameManager").GetComponent<GameManager>().gameOver = true;
             Destroy(whatIHit.gameObject);
         }
-        else if (whatIHit.tag == "Laser")
+        else if (whatIHit.CompareTag("Laser"))
         {
             hitCount++;
             Destroy(whatIHit.gameObject);

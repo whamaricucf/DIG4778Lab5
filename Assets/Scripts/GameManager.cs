@@ -8,7 +8,9 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject meteorPrefab;
     public GameObject bigMeteorPrefab;
+    public Player player;
     public bool gameOver = false;
+    private PlayerInputActions _playerInputActions;
 
     public int meteorCount = 0;
 
@@ -16,7 +18,20 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Instantiate(playerPrefab, transform.position, Quaternion.identity);
-        InvokeRepeating("SpawnMeteor", 1f, 2f);
+        player = GameObject.FindAnyObjectByType<Player>();
+        InvokeRepeating(nameof(SpawnMeteor), 1f, 2f);
+    }
+
+    private void OnEnable()
+    {
+        _playerInputActions = new PlayerInputActions();
+
+        _playerInputActions.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _playerInputActions.Player.Disable();
     }
 
     // Update is called once per frame
@@ -27,7 +42,7 @@ public class GameManager : MonoBehaviour
             CancelInvoke();
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && gameOver)
+        if (_playerInputActions.Player.Restart.triggered && gameOver)
         {
             SceneManager.LoadScene("Week5Lab");
         }
@@ -40,12 +55,12 @@ public class GameManager : MonoBehaviour
 
     void SpawnMeteor()
     {
-        Instantiate(meteorPrefab, new Vector3(Random.Range(-8, 8), 7.5f, 0), Quaternion.identity);
+        Instantiate(meteorPrefab, new Vector3(player.transform.position.x + Random.Range(-10, 10), player.transform.position.y + 8f, 0), Quaternion.identity);
     }
 
     void BigMeteor()
     {
         meteorCount = 0;
-        Instantiate(bigMeteorPrefab, new Vector3(Random.Range(-8, 8), 7.5f, 0), Quaternion.identity);
+        Instantiate(bigMeteorPrefab, new Vector3(player.transform.position.x + Random.Range(-10, 10), player.transform.position.y + 8f, 0), Quaternion.identity);
     }
 }

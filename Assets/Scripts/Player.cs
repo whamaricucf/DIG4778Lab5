@@ -6,15 +6,28 @@ public class Player : MonoBehaviour
 {
     public GameObject laserPrefab;
 
-    private float speed = 6f;
-    private float horizontalScreenLimit = 10f;
-    private float verticalScreenLimit = 6f;
+    private readonly float speed = 6f;
+    private readonly float horizontalScreenLimit = 10f;
+    private readonly float verticalScreenLimit = 6f;
     private bool canShoot = true;
+    private PlayerInputActions _playerInputActions;
 
     // Start is called before the first frame update
     void Start()
     {
         
+    }
+
+    private void OnEnable()
+    {
+        _playerInputActions = new PlayerInputActions();
+
+        _playerInputActions.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _playerInputActions.Player.Disable();
     }
 
     // Update is called once per frame
@@ -26,6 +39,9 @@ public class Player : MonoBehaviour
 
     void Movement()
     {
+        Vector2 _playerInput = _playerInputActions.Player.Movement.ReadValue<Vector2>();
+        
+        /*
         transform.Translate(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * speed);
         if (transform.position.x > horizontalScreenLimit || transform.position.x <= -horizontalScreenLimit)
         {
@@ -35,11 +51,13 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y * -1, 0);
         }
+        */
+        transform.Translate(new Vector3(_playerInput.x, _playerInput.y, 0) * Time.deltaTime * speed);
     }
 
     void Shooting()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canShoot)
+        if (_playerInputActions.Player.Shoot.triggered && canShoot)
         {
             Instantiate(laserPrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
             canShoot = false;
