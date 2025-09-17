@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public bool gameOver = false;
     private PlayerInputActions _playerInputActions;
-    private CinemachineVirtualCamera virtualCamera;
+    public CinemachineVirtualCamera virtualCamera;
     private float minZoom, maxZoom, zoomSpeed;
 
 

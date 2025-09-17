@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,7 @@ public class BigMeteor : MonoBehaviour
         {
             Destroy(this.gameObject);
             gameManager.bigMeteorCount--;
+            gameManager.virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 3f; // Add a coroutine to reset this after a short duration
         }
     }
 
