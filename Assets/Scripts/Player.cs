@@ -7,8 +7,6 @@ public class Player : MonoBehaviour
     public GameObject laserPrefab;
 
     private readonly float speed = 6f;
-    private readonly float horizontalScreenLimit = 10f;
-    private readonly float verticalScreenLimit = 6f;
     private bool canShoot = true;
     private PlayerInputActions _playerInputActions;
 

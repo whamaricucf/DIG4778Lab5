@@ -7,6 +7,7 @@ using Cinemachine;
 public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab;
+    public GameObject enemyPrefab;
     public GameObject meteorPrefab;
     public GameObject bigMeteorPrefab;
     public Player player;
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     private PlayerInputActions _playerInputActions;
     public CinemachineVirtualCamera virtualCamera;
     private float minZoom, maxZoom, zoomSpeed;
+    public FacePlayer facePlayer;
+    public EnemyOrbit enemyOrbit;
 
 
     public int meteorCount = 0;
@@ -22,9 +25,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("GameManager Start " + this.GetInstanceID());
         Instantiate(playerPrefab, transform.position, Quaternion.identity);
+        Instantiate(enemyPrefab, new Vector3(3, 3, 0), Quaternion.identity);
         player = GameObject.FindAnyObjectByType<Player>();
-        virtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+        facePlayer = FindObjectOfType<FacePlayer>();
+        enemyOrbit = FindObjectOfType<EnemyOrbit>();
+        facePlayer.GetPlayer();
+        enemyOrbit.GetPlayer();
         virtualCamera.Follow = player.transform;
         minZoom = 60f;
         maxZoom = 80f;
@@ -41,8 +49,16 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
+        Debug.Log("GameManager OnDisable", this);
         _playerInputActions.Player.Disable();
     }
+
+    void OnDestroy() { Debug.Log("GameManager OnDestroy", this); }
+
+    void Awake()
+{
+    virtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+}
 
     // Update is called once per frame
     void Update()
@@ -54,7 +70,7 @@ public class GameManager : MonoBehaviour
 
         if (_playerInputActions.Player.Restart.triggered && gameOver)
         {
-            SceneManager.LoadScene("Week5Lab");
+            SceneManager.LoadScene("TEst");
         }
 
         if (meteorCount == 5)
@@ -82,7 +98,6 @@ public class GameManager : MonoBehaviour
     {
         meteorCount = 0;
         bigMeteorCount++;
-        Instantiate(bigMeteorPrefab, new Vector3(player.transform.position.x + Random.Range(-10, 10), player.transform.position.y + 8f, 0), Quaternion.identity);
-        
+        Instantiate(bigMeteorPrefab, new Vector3(player.transform.position.x + Random.Range(-10, 10), player.transform.position.y + 8f, 0), Quaternion.identity);   
     }
 }

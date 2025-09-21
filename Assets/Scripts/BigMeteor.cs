@@ -6,12 +6,14 @@ using UnityEngine;
 public class BigMeteor : MonoBehaviour
 {
     public GameManager gameManager;
+    public CoroutineTest coroutineTest;
     private int hitCount = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        coroutineTest = GameObject.Find("GameManager").GetComponent<CoroutineTest>();
     }
 
     // Update is called once per frame
@@ -19,6 +21,7 @@ public class BigMeteor : MonoBehaviour
     {
         transform.Translate(Vector3.down * Time.deltaTime * 0.5f);
 
+        if (gameManager.player == null) return;
         if (transform.position.y < -11f + gameManager.player.transform.position.y)
         {
             Destroy(this.gameObject);
@@ -27,9 +30,11 @@ public class BigMeteor : MonoBehaviour
 
         if (hitCount >= 5)
         {
-            Destroy(this.gameObject);
+            hitCount = 0;
             gameManager.bigMeteorCount--;
-            gameManager.virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 3f; // Add a coroutine to reset this after a short duration
+            Debug.Log("Screenshaker coroutine started");
+            StartCoroutine(coroutineTest.Screenshaker());
+            Destroy(this.gameObject);
         }
     }
 
